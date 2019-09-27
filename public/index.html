@@ -1,0 +1,56 @@
+<html>
+<body>
+  <form onSubmit="return submitForm()">
+
+  <div>
+    <label>
+      Name
+    </label>
+    <input id="name" type="text">
+  </div>
+
+  <div>
+    <label>
+      Address
+    </label>
+    <input id="address" type="text">
+  </div>
+
+  <button class="button" id="submitButton" type="submit">Purchase</button>
+
+</form>
+
+<p id="answer">{{this.testVarString}}</p>
+
+</body>
+<script>
+  function submitForm(){
+    var req = new XMLHttpRequest()
+    req.open('POST', '/checkout', true)
+    req.setRequestHeader("Content-type", "application/json")
+    req.onreadystatechange = function(event) {
+      console.log('got an event')
+      console.log(event)
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status === 200) {
+          var res = JSON.parse(this.responseText)
+          document.getElementById('answer').textContent = res.val
+        } else {
+          console.log("not 200 status, answer: %d (%s)", this.status, this.statusText);
+        }
+      }
+    }
+    var obj = {
+      name: document.getElementById('name').value,
+      address: document.getElementById('address').value,
+    }
+
+    console.log('sending request' + JSON.stringify(obj))
+    req.send(JSON.stringify(obj))
+
+    return false
+  }
+
+  
+</script>
+</html>
